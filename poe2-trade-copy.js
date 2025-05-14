@@ -139,14 +139,10 @@ function addCopyButtons() {
 }
 
 window.addEventListener('load', () => {
-  console.log("Page fully loaded, injecting buttons...");
-
   const observer = new MutationObserver((mutationsList, observer) => {
     const myTarget = document.querySelector('.itemPopupContainer');
     if (myTarget) {
-      console.log('Target loaded!');
       addCopyButtons(); // Call the function to add buttons
-
       // observer.disconnect(); // Stop observing after the target is found
     }
   });
