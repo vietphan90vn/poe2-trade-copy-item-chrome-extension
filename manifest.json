@@ -11,7 +11,7 @@
   "content_scripts": [
     {
       "matches": ["https://www.pathofexile.com/trade2/*"],
-      "js": ["add-button.js"],
+      "js": ["poe2-trade-copy.js"],
       "run_at": "document_idle"
     }
   ],
