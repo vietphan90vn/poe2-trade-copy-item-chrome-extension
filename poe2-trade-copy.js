@@ -134,7 +134,6 @@ function addCopyButtons() {
 
     // Ensure the container is positioned relative for proper button placement
     const leftPanel = item.querySelector(".left");
-    leftPanel.style.position = "relative";
     leftPanel.appendChild(button);
   });
 }
@@ -147,6 +146,8 @@ window.addEventListener('load', () => {
     if (myTarget) {
       console.log('Target loaded!');
       addCopyButtons(); // Call the function to add buttons
+
+      // observer.disconnect(); // Stop observing after the target is found
     }
   });
 
