@@ -147,8 +147,6 @@ window.addEventListener('load', () => {
     if (myTarget) {
       console.log('Target loaded!');
       addCopyButtons(); // Call the function to add buttons
-
-      // observer.disconnect(); // Stop watching
     }
   });
 
