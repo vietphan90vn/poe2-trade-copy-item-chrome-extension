@@ -1,6 +1,7 @@
-# Simple Chrome Extension
+# PoE2 Trade Item Copy Chrome Extension
 
-This is a simple Chrome extension example.
+This is a Chrome extension support to copy Items from Path Of Exile 2 Trade page to clipboard
+The item can be paste to Path of building
 
 ## How to Run
 
@@ -23,4 +24,5 @@ This is a simple Chrome extension example.
 
 ## Features
 
-- A simple popup with a button that shows an alert when clicked.
+- Add copy button in the left side of items in Path of Exile 2 trade page
+- Click copy to copy content of this item to clipboard

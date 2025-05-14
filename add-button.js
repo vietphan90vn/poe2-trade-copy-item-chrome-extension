@@ -1,97 +1,156 @@
-// Function to parse and return item data as a string for a specific container
+// Function to parse the item data from a specific itemPopupContainer
 function parseItemData(container) {
-  let result = '';
+  let result = [];
 
-  // Parse properties
-  const properties = container.querySelectorAll('.property .s[data-field^="stat."]');
-  properties.forEach((property) => {
-    result += property.textContent.trim() + '\n';
-  });
-
-  // Parse separators
-  const separators = container.querySelectorAll('.separator');
-  separators.forEach(() => {
-    result += '-------\n';
-  });
-
-  // Parse requirements
-  const requirements = container.querySelector('.requirements');
-  if (requirements) {
-    result += requirements.textContent.trim() + '\n';
+  // Parse item class
+  const itemClass = container.querySelector(".property .lc span");
+  if (itemClass) {
+    result.push(`Item Class: ${itemClass.textContent}`);
   }
 
-  // Parse runeMod
-  const runeMods = container.querySelectorAll('.runeMod .s[data-field^="stat."]');
-  runeMods.forEach((runeMod) => {
-    result += runeMod.textContent.trim() + '\n';
+  // Parse rarity
+  if (container.classList.contains("uniquePopup")) {
+    result.push("Rarity: Unique");
+  } else if (container.classList.contains("rarePopup")) {
+    result.push("Rarity: Rare");
+  } else if (container.classList.contains("magicPopup")) {
+    result.push("Rarity: Magic");
+  } else if (container.classList.contains("normalPopup")) {
+    result.push("Rarity: Normal");
+  }
+
+  // Parse item name and type
+  const itemName = container.querySelector(".itemName .lc");
+  const itemType = container.querySelector(".itemName.typeLine .lc");
+  if (itemName) result.push(itemName.textContent);
+  if (itemType) result.push(itemType.textContent);
+
+  // Parse requirements
+  result.push("--------");
+  result.push("Requirements:");
+  const requirements = container.querySelector(".requirements");
+  if (requirements) {
+    const levelRequirement = requirements.querySelector('.s[data-field="lvl"]');
+    if (levelRequirement) {
+      const levelValue = levelRequirement
+        .querySelector(".colourDefault")
+        .textContent.trim();
+      result.push(`Level: ${levelValue}`);
+    }
+
+    const otherRequirements = requirements.querySelectorAll(
+      '.s[data-field="str"], .s[data-field="dex"]'
+    );
+    otherRequirements.forEach((req) => {
+      const value = req.querySelector(".colourDefault").textContent.trim();
+      const label = req.querySelector("span:last-child").textContent.trim();
+      result.push(`${label}: ${value}`);
+    });
+  }
+
+  // Parse item level
+  result.push("--------");
+  const itemLevel = container.querySelector(".itemLevel .s");
+  if (itemLevel) {
+    result.push(itemLevel.textContent);
+  }
+
+  // Parse rune mods
+  result.push("--------");
+  const runeMods = container.querySelectorAll(".runeMod .s");
+  runeMods.forEach((mod) => {
+    result.push(`${mod.textContent.trim()} (rune)`);
   });
 
-  // Parse explicitMods
-  const explicitMods = container.querySelectorAll('.explicitMod .s[data-field^="stat."]');
-  explicitMods.forEach((explicitMod) => {
-    result += explicitMod.textContent.trim() + '\n';
+  // Parse skills (implicit)
+  result.push("--------");
+  const skills = container.querySelectorAll(".skills .skill");
+  skills.forEach((skill) => {
+    result.push(`${skill.textContent.trim()} (implicit)`);
   });
 
-  // Parse implicitMods (if present)
-  const implicitMods = container.querySelectorAll('.implicitMod .s[data-field^="stat."]');
-  implicitMods.forEach((implicitMod) => {
-    result += implicitMod.textContent.trim() + '\n';
+  // Parse explicit mods
+  const explicitMods = container.querySelectorAll(".explicitMod .s");
+  explicitMods.forEach((mod) => {
+    result.push(mod.textContent.trim());
   });
 
-  return result.trim();
+  // Parse corrupted state
+  const corrupted = container.querySelector(".unmet .lc");
+  if (corrupted && corrupted.textContent === "Corrupted") {
+    result.push("--------");
+    result.push("Corrupted");
+  }
+
+  return result.join("\n");
 }
 
 // Function to copy text to clipboard
 function copyToClipboard(text) {
-  const tempTextArea = document.createElement('textarea');
+  const tempTextArea = document.createElement("textarea");
   tempTextArea.value = text;
   document.body.appendChild(tempTextArea);
   tempTextArea.select();
-  document.execCommand('copy');
+  document.execCommand("copy");
   document.body.removeChild(tempTextArea);
 }
 
 // Add a button to each itemPopupContainer
 function addCopyButtons() {
-  const containers = document.querySelectorAll('.itemPopupContainer');
+  const items_data = document.querySelectorAll("div[data-id]");
 
-  containers.forEach((container, index) => {
+  items_data.forEach((item, index) => {
+    if (item.querySelector("x-button")) {
+      return; // Skip if button already exists
+    }
     // Create the button
-    const button = document.createElement('button');
-    button.textContent = '🗐'; // Unicode clipboard icon
-    button.title = 'Copy to Clipboard'; // Tooltip for better UX
-    button.style.position = 'absolute';
-    button.style.top = '0px';
-    button.style.right = '55px';
-    button.style.zIndex = '9000';
-    button.style.padding = '0px 5px';
-    button.style.backgroundColor = 'rgba(51, 51, 51, 0.5)';
-    button.style.color = '#fff';
-    button.style.border = 'none';
-    button.style.borderRadius = '3px';
-    button.style.cursor = 'pointer';
-    button.style.fontSize = '14px';
+    const button = document.createElement("x-button");
+    button.textContent = "🗐"; // Unicode clipboard icon
+    button.title = "Copy to Clipboard"; // Tooltip for better UX
+    button.style.position = "absolute";
+    button.style.left = "35px";
+    button.style.bottom = "10px";
+    button.style.zIndex = "9000";
+    button.style.padding = "0px 5px";
+    button.style.backgroundColor = "rgba(0, 0, 0, 0)";
+    button.style.color = "#fff";
+    button.style.border = "none";
+    button.style.borderRadius = "3px";
+    button.style.cursor = "pointer";
+    button.style.fontSize = "20px";
 
     // Add click event to copy parsed data to clipboard
-    button.addEventListener('click', () => {
-      const parsedData = parseItemData(container);
+    button.addEventListener("click", () => {
+      const parsedData = parseItemData(item.querySelector(".itemPopupContainer"));
       // Update button state to indicate the data was copied
-      button.textContent = '✓';
+      button.textContent = "✓";
       copyToClipboard(parsedData);
 
       // Reset button state after 2 seconds
       setTimeout(() => {
-        button.textContent = '🗐'; // Unicode clipboard icon
+        button.textContent = "🗐"; // Unicode clipboard icon
       }, 2000);
     });
 
     // Ensure the container is positioned relative for proper button placement
-    container.style.position = 'relative';
-
-    // Append the button to the container
-    container.appendChild(button);
+    const leftPanel = item.querySelector(".left");
+    leftPanel.style.position = "relative";
+    leftPanel.appendChild(button);
   });
 }
 
-// Run the function to add buttons
-addCopyButtons();
+window.addEventListener('load', () => {
+  console.log("Page fully loaded, injecting buttons...");
+
+  const observer = new MutationObserver((mutationsList, observer) => {
+    const myTarget = document.querySelector('.itemPopupContainer');
+    if (myTarget) {
+      console.log('Target loaded!');
+      addCopyButtons(); // Call the function to add buttons
+
+      // observer.disconnect(); // Stop watching
+    }
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
+});

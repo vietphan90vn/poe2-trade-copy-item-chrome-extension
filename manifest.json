@@ -1,15 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "Simple Chrome Extension",
+  "name": "PoE2 Trade Item Copy",
   "version": "1.0",
-  "description": "A simple Chrome extension example.",
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
+  "description": "A Chrome extension to copy items from Path of Exile 2 trade page.",
+  "content_scripts": [
+    {
+      "matches": ["https://www.pathofexile.com/trade2/*"],
+      "js": ["add-button.js"],
+      "run_at": "document_idle"
     }
-  },
+  ],
   "permissions": []
 }

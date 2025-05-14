@@ -1,0 +1,27 @@
+Item Class: Spear
+Rarity: Unique
+Tangletongue
+Forked Spear
+--------
+Quality: +20%
+Physical Damage: 40-82
+Critical Hit Chance: 21.39%, 21.39%
+Attacks per Second: 1.60
+--------
+Requirements:
+Level: 30
+Dex: 48
+Str: 20
+--------
+Item Level: 35
+--------
++220 to Accuracy Rating (rune)
+--------
+Grants Skill: Spear Throw (implicit)
+Adds 16 to 36 Physical Damage
++16.39% to Critical Hit Chance
++22 to Intelligence
+Forks Critical Hits
+10% of Skill Mana Costs Converted to Life Costs
+--------
+Corrupted
