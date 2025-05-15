@@ -25,6 +25,15 @@ function parseItemData(container) {
   if (itemName) result.push(itemName.textContent);
   if (itemType) result.push(itemType.textContent);
 
+  // Parse quality (handles: <div class="property"><span class="lc s" data-field="quality"><span>Quality: </span><span class="colourAugmented">+14%</span></span></div>)
+  const qualityElement = container.querySelector(
+    '.property [data-field="quality"] span.colourAugmented'
+  );
+  if (qualityElement) {
+    result.push("--------");
+    result.push(`Quality: ${qualityElement.textContent.trim()}`);
+  }
+
   // Parse requirements
   result.push("--------");
   result.push("Requirements:");
@@ -39,7 +48,7 @@ function parseItemData(container) {
     }
 
     const otherRequirements = requirements.querySelectorAll(
-      '[data-field="str"], [data-field="dex"], [data-field="int"]',
+      '[data-field="str"], [data-field="dex"], [data-field="int"]'
     );
     otherRequirements.forEach((req) => {
       const value = req.querySelector(".colourDefault").textContent.trim();
@@ -56,11 +65,11 @@ function parseItemData(container) {
   }
 
   // Parse rune mods
-  const runeMods = container.querySelectorAll('.runeMod .lc');
+  const runeMods = container.querySelectorAll(".runeMod .lc");
   if (runeMods.length > 0) {
     result.push("--------");
     runeMods.forEach((mod) => {
-      if (mod.textContent.trim() !== ""){
+      if (mod.textContent.trim() !== "") {
         result.push(`${mod.textContent.trim()} (rune)`);
       }
     });
@@ -159,7 +168,9 @@ function addCopyButtons() {
 
     // Add click event to copy parsed data to clipboard
     button.addEventListener("click", () => {
-      const parsedData = parseItemData(item.querySelector(".itemPopupContainer"));
+      const parsedData = parseItemData(
+        item.querySelector(".itemPopupContainer")
+      );
       // Update button state to indicate the data was copied
       button.textContent = "✓";
       copyToClipboard(parsedData);
@@ -176,9 +187,9 @@ function addCopyButtons() {
   });
 }
 
-window.addEventListener('load', () => {
+window.addEventListener("load", () => {
   const observer = new MutationObserver((mutationsList, observer) => {
-    const myTarget = document.querySelector('.itemPopupContainer');
+    const myTarget = document.querySelector(".itemPopupContainer");
     if (myTarget) {
       addCopyButtons(); // Call the function to add buttons
       // observer.disconnect(); // Stop observing after the target is found
