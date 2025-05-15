@@ -75,6 +75,12 @@ function parseItemData(container) {
     });
   }
 
+  // Parse enchantMod
+  const enchantMod = container.querySelector(".enchantMod .s");
+  if (enchantMod) {
+    result.push("--------");
+    result.push(`${enchantMod.textContent.trim()} (enchant)`);
+  }
   // Parse implicits
   const implicts = container.querySelectorAll(".implicitMod .s");
   if (implicts.length > 0) {
