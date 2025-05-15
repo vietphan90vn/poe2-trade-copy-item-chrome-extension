@@ -30,7 +30,7 @@ function parseItemData(container) {
   result.push("Requirements:");
   const requirements = container.querySelector(".requirements");
   if (requirements) {
-    const levelRequirement = requirements.querySelector('.s[data-field="lvl"]');
+    const levelRequirement = requirements.querySelector('[data-field="lvl"]');
     if (levelRequirement) {
       const levelValue = levelRequirement
         .querySelector(".colourDefault")
@@ -39,7 +39,7 @@ function parseItemData(container) {
     }
 
     const otherRequirements = requirements.querySelectorAll(
-      '.s[data-field="str"], .s[data-field="dex"]'
+      '[data-field="str"], [data-field="dex"], [data-field="int"]',
     );
     otherRequirements.forEach((req) => {
       const value = req.querySelector(".colourDefault").textContent.trim();
@@ -50,30 +50,62 @@ function parseItemData(container) {
 
   // Parse item level
   result.push("--------");
-  const itemLevel = container.querySelector(".itemLevel .s");
+  const itemLevel = container.querySelector('.itemLevel [data-field="ilvl"]');
   if (itemLevel) {
     result.push(itemLevel.textContent);
   }
 
   // Parse rune mods
-  result.push("--------");
-  const runeMods = container.querySelectorAll(".runeMod .s");
-  runeMods.forEach((mod) => {
-    result.push(`${mod.textContent.trim()} (rune)`);
-  });
+  const runeMods = container.querySelectorAll('.runeMod .lc');
+  if (runeMods.length > 0) {
+    result.push("--------");
+    runeMods.forEach((mod) => {
+      if (mod.textContent.trim() !== ""){
+        result.push(`${mod.textContent.trim()} (rune)`);
+      }
+    });
+  }
 
-  // Parse skills (implicit)
-  result.push("--------");
+  // Parse Grand skills
   const skills = container.querySelectorAll(".skills .skill");
-  skills.forEach((skill) => {
-    result.push(`${skill.textContent.trim()} (implicit)`);
-  });
+  if (skills.length > 0) {
+    result.push("--------");
+    skills.forEach((skill) => {
+      result.push(`${skill.textContent.trim()} (implicit)`);
+    });
+  }
+
+  // Parse implicits
+  const implicts = container.querySelectorAll(".implicitMod .s");
+  if (implicts.length > 0) {
+    result.push("--------");
+    implicts.forEach((implicit) => {
+      result.push(`${implicit.textContent.trim()} (implicit)`);
+    });
+  }
+
+  // Parse fracturedMod
+  const explicits = [];
+
+  const fracturedMod = container.querySelector(".fracturedMod .s");
+  if (fracturedMod) {
+    explicits.push(`${fracturedMod.textContent.trim()} (fractured)`);
+  }
 
   // Parse explicit mods
   const explicitMods = container.querySelectorAll(".explicitMod .s");
-  explicitMods.forEach((mod) => {
-    result.push(mod.textContent.trim());
-  });
+  if (explicitMods.length > 0) {
+    explicitMods.forEach((mod) => {
+      explicits.push(mod.textContent.trim());
+    });
+  }
+
+  if (explicits.length > 0) {
+    result.push("--------");
+    explicits.forEach((explicit) => {
+      result.push(explicit);
+    });
+  }
 
   // Parse corrupted state
   const corrupted = container.querySelector(".unmet .lc");
