@@ -3,7 +3,8 @@
 This Extension allows users to copy item details from the Path of Exile 2 trade page to the clipboard. The copied item data can then be pasted into Path of Building.
 
 ## Note
-The source code in this project was generated with the assistance of GitHub Copilot - GPT-4 under my instruction.
+- The source code in this project was generated with the assistance of GitHub Copilot - GPT-4 under my instruction.
+- For the final bug fixes and parsing improvements, I made manual adjustments myself as it was more efficient than instructing Copilot.
 
 ## How to Run
 
